@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Giáng Sinh An Lành ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Pacifico&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. CORE SETUP & ATMOSPHERE --- */
+        :root {
+            /* Nền Intro được làm ấm hơn và có chiều sâu hơn */
+            --bg-intro: radial-gradient(circle at center, #fff1f2 30%, #fecdd3 80%, #f43f5e 100%);
+            
+            --bg-night: radial-gradient(circle at 50% 100%, #1e1b4b 0%, #0f172a 40%, #020617 100%);
+            --bg-final: linear-gradient(135deg, #0f172a, #312e81, #1e293b);
+            
+            --tree-dark: #022c22;
+            --tree-mid: #064e3b;
+            --tree-light: #059669;
+            
+            --light-warm: #fcd34d;
+            --light-glow: rgba(252, 211, 77, 0.6);
+            --gift-red: #ef4444;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Quicksand', sans-serif;
+            background: #000; overflow: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #app-container {
+            position: absolute; width: 100%; height: 100%;
+            background: var(--bg-intro);
+            transition: background 1.5s ease-in-out;
+            z-index: 1;
+        }
+
+        /* Cinematic Effects Layer */
+        .cinematic-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 900;
+        }
+        .vignette {
+            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.6) 100%);
+        }
+        .grain {
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        .layer {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            transition: all 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 10;
+        }
+        .hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+        .zoom-out { transform: scale(1.5); opacity: 0; filter: blur(15px); }
+        .zoom-in { transform: scale(0.5); opacity: 0; filter: blur(15px); }
+
+        /* --- MỚI: INTRO DECORATIONS (TRANG TRÍ NỀN INTRO) --- */
+        .intro-deco-container {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden; pointer-events: none; z-index: 0;
+        }
+        /* Hạt tuyết/lấp lánh background */
+        .deco-item {
+            position: absolute;
+            color: #fff;
+            opacity: 0.7;
+            text-shadow: 0 0 5px rgba(255,255,255,0.8);
+            animation: decoFloat 6s ease-in-out infinite alternate;
+        }
+        /* Bóng mờ Bokeh */
+        .deco-orb {
+            position: absolute; border-radius: 50%;
+            filter: blur(40px); opacity: 0.4;
+            animation: decoMove 20s linear infinite;
+        }
+
+        @keyframes decoFloat { 
+            0% { transform: translateY(0) rotate(0deg); } 
+            100% { transform: translateY(-20px) rotate(10deg); } 
+        }
+        @keyframes decoMove {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(30px, -30px); }
+            100% { transform: translate(0, 0); }
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* --- SCENE 1: INTRO (PREMIUM CARD) --- */
+        .intro-card {
+            width: 300px; height: 200px;
+            background: #fff;
+            /* Họa tiết caro chìm */
+            background-image: 
+                linear-gradient(45deg, #fecaca 25%, transparent 25%, transparent 75%, #fecaca 75%, #fecaca),
+                linear-gradient(45deg, #fecaca 25%, transparent 25%, transparent 75%, #fecaca 75%, #fecaca);
+            background-position: 0 0, 10px 10px;
+            background-size: 20px 20px;
+            border-radius: 16px; padding: 15px;
+            box-shadow: 0 25px 50px -12px rgba(190, 18, 60, 0.4); /* Bóng đổ màu đỏ nhẹ */
+            cursor: pointer; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative; z-index: 5;
+        }
+        .intro-card:hover { transform: translateY(-10px) rotate(2deg) scale(1.02); }
+        .intro-card::before {
+            content: ''; position: absolute; inset: -5px; 
+            border-radius: 20px; background: linear-gradient(45deg, #fb7185, #60a5fa);
+            z-index: -1; opacity: 0.6; filter: blur(10px);
+        }
+
+        /* Thêm nơ trang trí góc thiệp */
+        .card-bow {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 40px; height: 40px; background: #ef4444;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        .card-bow::after, .card-bow::before {
+            content: ''; position: absolute; top: 10px;
+            width: 30px; height: 30px; background: #ef4444;
+            border-radius: 50%; z-index: -1;
+        }
+        .card-bow::before { left: -15px; }
+        .card-bow::after { right: -15px; }
+
+        .card-inner {
+            width: 100%; height: 100%; background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(5px);
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-radius: 12px; border: 1px solid rgba(255,255,255,0.5);
+        }
+        .play-btn {
+            width: 64px; height: 64px; background: linear-gradient(135deg, #f472b6, #db2777);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            animation: pulse-ring 2s infinite; margin-bottom: 15px;
+            box-shadow: 0 10px 15px -3px rgba(219, 39, 119, 0.4);
+        }
+        .play-btn::after {
+            content: ''; border-left: 20px solid #fff; border-top: 14px solid transparent; border-bottom: 14px solid transparent; margin-left: 6px;
+        }
+        .card-title {
+            font-family: 'Pacifico', cursive;
+            font-size: 2rem;
+            background: linear-gradient(to right, #db2777, #9333ea);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0; text-align: center;
+        }
+
+        /* --- SCENE 2: THE TREE --- */
+        .tree-stage {
+            position: relative; width: 400px; height: 600px;
+            display: flex; flex-direction: column; align-items: center;
+            margin-top: 20px;
+        }
+        #tree-lights-canvas {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 15; pointer-events: none; 
+        }
+
+        .tree-part {
+            position: relative; width: 0; height: 0;
+            border-left: var(--w) solid transparent;
+            border-right: var(--w) solid transparent;
+            border-bottom: var(--h) solid var(--tree-mid);
+            margin-bottom: -50px; z-index: var(--z);
+            filter: drop-shadow(0 20px 20px rgba(0,0,0,0.6));
+            transform-origin: top center;
+            animation: treeSway 4s ease-in-out infinite alternate;
+        }
+        .tree-part::after {
+            content: ''; position: absolute;
+            left: 0; top: var(--top-offset); width: var(--w); height: var(--h);
+            background: linear-gradient(90deg, rgba(0,0,0,0.2), transparent 30%, rgba(255,255,255,0.1) 70%);
+            clip-path: polygon(0 0, 100% 100%, 0 100%); pointer-events: none;
+        }
+        .t1 { --w: 100px; --h: 120px; --z: 3; --top-offset: 0; animation-delay: 0.1s; }
+        .t2 { --w: 130px; --h: 150px; --z: 2; --top-offset: 0; animation-delay: 0.2s; border-bottom-color: var(--tree-dark); }
+        .t3 { --w: 160px; --h: 180px; --z: 1; --top-offset: 0; animation-delay: 0.3s; }
+        
+        .trunk { 
+            width: 40px; height: 60px; 
+            background: linear-gradient(90deg, #271c19, #451a03, #271c19); 
+            margin-top: 20px; border-radius: 4px; z-index: 0; 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Quà treo */
+        .bauble {
+            position: absolute; width: 22px; height: 22px; border-radius: 50%; z-index: 12;
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), var(--c) 40%, #000 95%);
+            box-shadow: 0 0 10px var(--c);
+            animation: swingBauble 3s ease-in-out infinite alternate;
+        }
+        .hanging-gift {
+            position: absolute; width: 44px; height: 44px;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            border-radius: 6px; z-index: 20;
+            cursor: pointer; transform-origin: top center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            transition: 0.3s;
+        }
+        .hanging-gift::before { content: ''; position: absolute; top: -40px; left: 50%; width: 1px; height: 40px; background: rgba(255,255,255,0.4); }
+        .hanging-gift::after { content: ''; position: absolute; width: 10px; height: 100%; background: #facc15; left: 50%; transform: translateX(-50%); box-shadow: 0 0 5px rgba(250, 204, 21, 0.5); }
+        .lid {
+            position: absolute; top: -8px; left: -4px; width: 52px; height: 12px;
+            background: #dc2626; border-radius: 3px;
+            transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
+            transform-origin: top; box-shadow: 0 2px 5px rgba(0,0,0,0.3); z-index: 2;
+        }
+        .lid::before { content: ''; position: absolute; left: 50%; top: -5px; transform: translateX(-50%); width: 14px; height: 8px; background: #facc15; border-radius: 2px; }
+        .hanging-gift:hover { transform: scale(1.15) rotate(0); z-index: 100; filter: brightness(1.2); }
+        .hanging-gift.opened .lid { transform: rotateX(200deg); }
+        .hanging-gift.opened { animation: fadeOutUp 0.5s forwards 0.5s; pointer-events: none; }
+        @keyframes fadeOutUp { to { opacity: 0; transform: translateY(-20px) scale(0.8); } }
+        #g1 { top: 110px; left: 140px; animation: swingGift 3.5s ease-in-out infinite alternate; }
+        #g2 { top: 220px; left: 250px; animation: swingGift 4.2s ease-in-out infinite alternate -1s; }
+        #g3 { top: 330px; left: 120px; animation: swingGift 3.8s ease-in-out infinite alternate -2s; }
+        #g4 { top: 390px; left: 240px; animation: swingGift 4.5s ease-in-out infinite alternate -0.5s; }
+
+        /* Quà dưới sàn */
+        .floor-gift { position: absolute; bottom: 20px; z-index: 5; box-shadow: 0 5px 15px rgba(0,0,0,0.5); border-radius: 4px; }
+        .floor-gift::before { content: ''; position: absolute; width: 6px; height: 100%; left: 50%; transform: translateX(-50%); background: rgba(255,255,255,0.7); }
+        .floor-gift::after { content: ''; position: absolute; height: 6px; width: 100%; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.7); }
+        .g-f1 { width: 50px; height: 45px; left: 100px; background: #c026d3; transform: rotate(-5deg); }
+        .g-f2 { width: 65px; height: 55px; left: 160px; bottom: 15px; background: #16a34a; z-index: 6; }
+        .g-f3 { width: 45px; height: 60px; left: 235px; background: #ea580c; transform: rotate(8deg); }
+
+        .star-top {
+            font-size: 80px; color: #fbbf24; margin-bottom: -45px; z-index: 16;
+            filter: drop-shadow(0 0 30px #fbbf24); 
+            animation: starPulse 2s infinite alternate;
+        }
+
+        /* GẤU BÔNG CSS */
+        .bear-wrapper { position: absolute; z-index: 4; animation: bearBreathe 3s ease-in-out infinite alternate; pointer-events: none; }
+        .bear-body {
+            width: 60px; height: 70px; background: #8d5524;
+            border-radius: 50% 50% 45% 45% / 60% 60% 40% 40%; position: relative;
+            box-shadow: inset 0 -5px 15px rgba(0,0,0,0.3), 0 5px 10px rgba(0,0,0,0.2);
+        }
+        .bear-body::after {
+            content: ''; position: absolute; width: 35px; height: 40px; background: #cba37e;
+            bottom: 5px; left: 50%; transform: translateX(-50%); border-radius: 50%;
+        }
+        .bear-head {
+            width: 70px; height: 65px; background: #8d5524;
+            border-radius: 50% 50% 45% 45%; position: absolute;
+            top: -50px; left: 50%; transform: translateX(-50%); box-shadow: inset 0 -3px 10px rgba(0,0,0,0.2);
+        }
+        .bear-ear { position: absolute; width: 22px; height: 22px; background: #8d5524; border-radius: 50%; top: -5px; z-index: -1; }
+        .bear-ear.left { left: -2px; }
+        .bear-ear.right { right: -2px; }
+        .bear-ear::after { content: ''; position: absolute; width: 12px; height: 12px; background: #cba37e; border-radius: 50%; top: 5px; left: 5px; }
+        .bear-face { position: absolute; width: 100%; height: 100%; }
+        .bear-eye { position: absolute; width: 8px; height: 8px; background: #261a12; border-radius: 50%; top: 25px; }
+        .bear-eye.left { left: 18px; }
+        .bear-eye.right { right: 18px; }
+        .bear-eye::after { content: ''; position: absolute; width: 3px; height: 3px; background: #fff; border-radius: 50%; top: 1px; left: 1px; }
+        .bear-snout {
+            position: absolute; width: 30px; height: 22px; background: #cba37e; border-radius: 50%;
+            bottom: 10px; left: 50%; transform: translateX(-50%);
+        }
+        .bear-snout::after {
+            content: ''; position: absolute; width: 10px; height: 8px; background: #422a1c; border-radius: 50% 50% 30% 30%;
+            top: 3px; left: 50%; transform: translateX(-50%);
+        }
+        .bear-shadow-bottom {
+            position: absolute; width: 80%; height: 15px; background: rgba(0,0,0,0.4); border-radius: 50%;
+            bottom: -5px; left: 10%; filter: blur(5px); z-index: -1;
+        }
+        .b1 { left: 50px; bottom: 35px; transform: rotate(-10deg) scale(0.9); }
+        .b2 { left: 290px; bottom: 30px; transform: rotate(15deg) scale(0.95); }
+        .b2 .bear-body, .b2 .bear-head, .b2 .bear-ear { background: #7a4a20; } 
+        @keyframes bearBreathe { from { transform: scale(1) translateY(0); } to { transform: scale(1.02) translateY(-2px); } }
+
+        /* --- SCENE 3: FINAL --- */
+        #scene-final { perspective: 1000px; }
+        #heart-canvas { position: absolute; top: 0; left: 0; z-index: 1; pointer-events: none; }
+        .name-3d {
+            font-family: 'Dancing Script', cursive; font-size: 6rem; color: #e0f2fe;
+            text-shadow: 0 0 10px rgba(14, 165, 233, 0.8), 0 0 30px rgba(14, 165, 233, 0.6);
+            animation: floatText 4s ease-in-out infinite alternate;
+        }
+        .wishes {
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(4px);
+            padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2);
+            color: #fff; line-height: 1.8; max-width: 90%;
+            margin-top: 20px; opacity: 0; animation: fadeIn 2s forwards 0.5s;
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 999;
+            display: flex; justify-content: center; align-items: center; opacity: 0; visibility: hidden; transition: 0.4s; backdrop-filter: blur(8px);
+        }
+        .paper-letter {
+            width: 85%; max-width: 450px; background: #fff; padding: 40px 30px;
+            background-image: linear-gradient(to right, rgba(0,0,0,0.05) 1px, transparent 1px), linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 20px 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+            transform: translateY(100px) rotate(-5deg); opacity: 0; transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; border-radius: 4px;
+        }
+        .paper-letter::after { content: 'Merry Xmas'; position: absolute; bottom: 10px; right: 20px; font-family: 'Dancing Script'; color: #ef4444; opacity: 0.3; font-size: 20px; }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+        .modal-overlay.active .paper-letter { transform: translateY(0) rotate(0deg); opacity: 1; }
+        .btn-close {
+            margin-top: 25px; padding: 10px 30px; border: none; background: linear-gradient(90deg, #ef4444, #dc2626);
+            color: #fff; border-radius: 30px; font-weight: bold; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.4); transition: transform 0.2s;
+        }
+        .btn-close:active { transform: scale(0.95); }
+
+        /* KEYFRAMES */
+        @keyframes pulse-ring { 0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(244, 114, 182, 0.7); } 70% { transform: scale(1); box-shadow: 0 0 0 20px rgba(244, 114, 182, 0); } 100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(244, 114, 182, 0); } }
+        @keyframes treeSway { from { transform: rotate(-0.5deg); } to { transform: rotate(0.5deg); } }
+        @keyframes swingBauble { from { transform: rotate(-5deg) translateY(0); } to { transform: rotate(5deg) translateY(-2px); } }
+        @keyframes swingGift { from { transform: rotate(-2deg); } to { transform: rotate(2deg); } }
+        @keyframes starPulse { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.2); opacity: 1; } }
+        @keyframes floatText { from { transform: translateY(0); } to { transform: translateY(-20px); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        @media (max-width: 400px) { .tree-stage { transform: scale(0.85); margin-top: 0; } .name-3d { font-size: 4rem; } }
+    </style>
+</head>
+<body>
+
+    <div class="cinematic-layer vignette"></div>
+    <div class="cinematic-layer grain"></div>
+
+    <div id="app-container">
+        
+        <div id="scene-intro" class="layer">
+            <div class="intro-deco-container">
+                <div class="deco-orb" style="width: 200px; height: 200px; background: #fecaca; top: 10%; left: 10%;"></div>
+                <div class="deco-orb" style="width: 150px; height: 150px; background: #a7f3d0; bottom: 20%; right: 10%; animation-delay: -5s;"></div>
+                <div class="deco-orb" style="width: 100px; height: 100px; background: #fde047; top: 40%; left: 50%; animation-delay: -10s;"></div>
+
+                <div class="deco-item" style="top: 15%; left: 20%; font-size: 24px;">❄</div>
+                <div class="deco-item" style="top: 25%; right: 25%; font-size: 18px; animation-delay: 1s;">✨</div>
+                <div class="deco-item" style="bottom: 30%; left: 30%; font-size: 20px; animation-delay: 2s;">❄</div>
+                <div class="deco-item" style="top: 50%; right: 10%; font-size: 14px; animation-delay: 1.5s;">✨</div>
+                <div class="deco-item" style="top: 10%; left: 80%; font-size: 22px; animation-delay: 0.5s;">❄</div>
+                
+                <div class="deco-item" style="top: 20%; left: 50%; font-size: 10px; animation: twinkle 2s infinite;">✦</div>
+                <div class="deco-item" style="bottom: 20%; right: 40%; font-size: 12px; animation: twinkle 3s infinite;">✦</div>
+            </div>
+            
+            <div class="intro-card" onclick="startShow()">
+                <div class="card-bow"></div>
+                <div class="card-inner">
+                    <div class="play-btn"></div>
+                    <h1 class="card-title">Gửi đến ai đóa ✨</h1>
+                    <p style="color:#9ca3af; font-size:14px; margin-top:10px;">(Chạm nhẹ để mở quà)</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="scene-tree" class="layer hidden">
+            <div class="tree-stage">
+                <div class="star-top">🌟</div>
+
+                <canvas id="tree-lights-canvas"></canvas>
+
+                <div class="tree-part t1"></div>
+                <div class="tree-part t2"></div>
+                <div class="tree-part t3"></div>
+                <div class="trunk"></div>
+
+                <div class="bauble" style="top: 150px; left: 170px; --c: #ef4444;"></div>
+                <div class="bauble" style="top: 190px; left: 210px; --c: #3b82f6;"></div>
+                <div class="bauble" style="top: 270px; left: 160px; --c: #eab308;"></div>
+                <div class="bauble" style="top: 340px; left: 250px; --c: #a855f7;"></div>
+                <div class="bauble" style="top: 440px; left: 150px; --c: #f97316;"></div>
+                <div class="bauble" style="top: 460px; left: 240px; --c: #06b6d4;"></div>
+
+                <div class="bear-wrapper b1">
+                    <div class="bear-body">
+                        <div class="bear-head">
+                            <div class="bear-ear left"></div>
+                            <div class="bear-ear right"></div>
+                            <div class="bear-face">
+                                <div class="bear-eye left"></div>
+                                <div class="bear-eye right"></div>
+                                <div class="bear-snout"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bear-shadow-bottom"></div>
+                </div>
+
+                <div class="bear-wrapper b2">
+                    <div class="bear-body">
+                        <div class="bear-head">
+                            <div class="bear-ear left"></div>
+                            <div class="bear-ear right"></div>
+                            <div class="bear-face">
+                                <div class="bear-eye left"></div>
+                                <div class="bear-eye right"></div>
+                                <div class="bear-snout"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bear-shadow-bottom"></div>
+                </div>
+
+
+                <div id="g1" class="hanging-gift" onclick="openGift(0)"><div class="lid"></div></div>
+                <div id="g2" class="hanging-gift" onclick="openGift(1)"><div class="lid"></div></div>
+                <div id="g3" class="hanging-gift" onclick="openGift(2)"><div class="lid"></div></div>
+                <div id="g4" class="hanging-gift" onclick="openGift(3)"><div class="lid"></div></div>
+
+                <div class="floor-gift g-f1"></div>
+                <div class="floor-gift g-f2"></div>
+                <div class="floor-gift g-f3"></div>
+            </div>
+            <p style="color: #e2e8f0; margin-top: 10px; font-weight: 500; text-shadow: 0 2px 4px #000; z-index: 20;">Tìm 4 món quà treo trên cây nhé!</p>
+        </div>
+
+        <div id="scene-final" class="layer hidden">
+            <canvas id="heart-canvas"></canvas>
+            <div class="final-content" style="z-index: 10; text-align: center;">
+                <div class="name-3d">Quỳnh</div> 
+                <div class="wishes">
+                    Chúc Quỳnh một mùa Giáng Sinh an lành, ấm áp và một năm mới rực rỡ với thật nhiều niềm vui.<br>
+                    <strong>Merry Christmas & Happy New Year!</strong> 🎄✨
+                </div>
+            </div>
+        </div>
+
+        <div id="modal" class="modal-overlay">
+            <div class="paper-letter">
+                <div class="letter-content" id="letter-text" style="font-size: 1.15rem; line-height: 1.6; color: #334155; white-space: pre-line;"></div>
+                <div style="text-align: center;">
+                    <button class="btn-close" onclick="closeLetter()">Cất vào tim ❤️</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA ---
+        const letters = [
+            "Chúc bà có một mùa đông thật là ấm áp ☃️! Hãy xem những khó khăn đã qua như những bài học quý giá, để năm mới sắp tới có thêm sức mạnh và niềm tin chinh phục những mục tiêu lớn hơn nha 💯. Tui luôn ở đây tiếp sức cho bà!",
+            "Giáng sinh đã đến rồi 🎄❄️!\nMùa đông lạnh đóa nhưng đừng để lòng mình lạnh nhé 🥶. Hãy luôn giữ nụ cười rạng rỡ ấy, bớt buồn linh tinh và nhớ là lúc nào cũng phải vui vẻ. Vì nụ cười nó rất dễ thương:)) 🤔🐧. Chúc bạn Quỳnh luôn được bao bọc bởi niềm vui và sự dịu dàng của thế giới này.<3",
+            "Happy New Year, Merry Christmas nha cốtt! 🎉\nKhép lại năm cũ đã qua, mong rằng mọi điều không vui sẽ ở lại phía sau. Chúc Quình 👀 bước sang năm mới với thật nhiều năng lượng, mạnh mẽ hơn, tự tin hơn và đạt được những điều mong ước.:>>",
+            "Mong là dù học có khó tới đâu, tụi mình vẫn đi cùng nhau, cùng cố gắng và cùng trưởng thành từng chút một 🤧.\nHãy tiếp tục cùng nhau tạo nên những kỷ niệm đẹp nhé! Chúc Quình một năm học thật thành công, học giỏi hơn từng ngày 🥳. Cùng nhau đồng hành bước tiếp trên hành trình này nhé 😝!"
+        ]; 
+
+        let openedSet = new Set();
+        const app = document.getElementById('app-container');
+        
+        let isTreeSceneActive = false;
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; });
+        document.addEventListener('touchmove', (e) => { mouseX = e.touches[0].clientX; mouseY = e.touches[0].clientY; }, {passive: true});
+
+        function startShow() {
+            app.style.background = "var(--bg-night)";
+            const l1 = document.getElementById('scene-intro');
+            const l2 = document.getElementById('scene-tree');
+            
+            l1.classList.add('zoom-out');
+            setTimeout(() => {
+                l1.classList.add('hidden');
+                l2.classList.remove('hidden');
+                isTreeSceneActive = true;
+                initTreeLights(); 
+            }, 800);
+        }
+
+        function openGift(idx) {
+            const gift = document.getElementById('g'+(idx+1));
+            gift.classList.add('opened');
+            setTimeout(() => {
+                document.getElementById('letter-text').innerText = letters[idx];
+                document.getElementById('modal').classList.add('active');
+            }, 400);
+            openedSet.add(idx);
+        }
+
+        function closeLetter() {
+            document.getElementById('modal').classList.remove('active');
+            if(openedSet.size === 4) {
+                setTimeout(toFinalScene, 300);
+            }
+        }
+
+        function toFinalScene() {
+            isTreeSceneActive = false; 
+            app.style.background = "var(--bg-final)";
+            const l2 = document.getElementById('scene-tree');
+            const l3 = document.getElementById('scene-final');
+            l2.classList.add('zoom-in');
+            l3.classList.remove('hidden');
+            l3.style.opacity = 0; 
+            l3.style.transition = "opacity 1s ease-in"; 
+            setTimeout(() => { l3.style.opacity = 1; }, 100);
+            setTimeout(() => { l2.classList.add('hidden'); initFinalCanvas(); }, 800); 
+        }
+
+        function initTreeLights() {
+            const canvas = document.getElementById('tree-lights-canvas');
+            const ctx = canvas.getContext('2d');
+            const resize = () => {
+                const rect = canvas.parentElement.getBoundingClientRect();
+                canvas.width = rect.width; canvas.height = rect.height;
+            };
+            resize(); window.addEventListener('resize', resize);
+            const lights = []; const spiralTurns = 5; const pointsPerTurn = 15; const colors = ['#fcd34d', '#ef4444', '#3b82f6', '#f472b6'];
+            for (let i = 0; i < spiralTurns * pointsPerTurn; i++) {
+                const progress = i / (spiralTurns * pointsPerTurn);
+                lights.push({ progress: progress, angleOffset: i * (Math.PI * 2 / pointsPerTurn), color: colors[i % colors.length], blinkOffset: Math.random() * Math.PI * 2, y: 0, x: 0, z: 0 });
+            }
+            const particles = [];
+            for(let i=0; i<30; i++) { particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2, speedY: Math.random() * 0.5 + 0.2, opacity: Math.random() }); }
+            let time = 0;
+            function animate() {
+                if(!isTreeSceneActive) return;
+                ctx.clearRect(0, 0, canvas.width, canvas.height); time += 0.02;
+                ctx.fillStyle = "#fff";
+                particles.forEach(p => {
+                    p.y -= p.speedY; if(p.y < 0) p.y = canvas.height;
+                    ctx.globalAlpha = p.opacity * 0.5; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill();
+                });
+                const treeBaseY = 480; const treeTopY = 80; const treeHeight = treeBaseY - treeTopY; const baseWidth = 160; 
+                const cx = window.innerWidth / 2; const cy = window.innerHeight / 2;
+                const dist = Math.sqrt(Math.pow(mouseX - cx, 2) + Math.pow(mouseY - cy, 2));
+                const proximity = Math.max(0, 1 - dist/500); const brightnessBoost = 1 + proximity * 1.5;
+                lights.forEach(l => {
+                    const currentY = treeBaseY - (l.progress * treeHeight); const currentRadius = baseWidth * (1 - l.progress); 
+                    const angle = l.angleOffset - time * 0.5;
+                    const x3d = Math.cos(angle) * currentRadius; const z3d = Math.sin(angle) * currentRadius; 
+                    const x2d = (canvas.width / 2) + x3d; const y2d = currentY + (Math.sin(time + l.progress*5) * 5); 
+                    const isBehind = z3d < -10; 
+                    if (!isBehind) {
+                        const blink = Math.sin(time * 3 + l.blinkOffset); const alpha = (0.6 + blink * 0.4) * brightnessBoost; const size = (3 + blink) * (1 - l.progress * 0.5); 
+                        ctx.globalAlpha = alpha; ctx.shadowBlur = 10 * alpha; ctx.shadowColor = l.color; ctx.fillStyle = l.color;
+                        ctx.beginPath(); ctx.arc(x2d, y2d, size, 0, Math.PI * 2); ctx.fill();
+                        ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(x2d, y2d, size * 0.4, 0, Math.PI * 2); ctx.fill();
+                    }
+                });
+                ctx.shadowBlur = 0; requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function initFinalCanvas() {
+            const c = document.getElementById('heart-canvas'); const x = c.getContext('2d');
+            c.width = window.innerWidth; c.height = window.innerHeight;
+            let parts = []; const icons = ['❄','✨','🤍','🎄','⛄','🫶','🫀','🤷🏻'];
+            for(let i=0; i<150; i++) { parts.push({ x: Math.random()*c.width, y: Math.random()*c.height, s: Math.random()*20+10, sp: 1 + Math.random() * 2, swing: Math.random() * 2, c: icons[Math.floor(Math.random()*icons.length)], o: Math.random() }); }
+            function draw() {
+                x.clearRect(0,0,c.width,c.height);
+                parts.forEach(p => {
+                    p.y -= p.sp; p.x += Math.sin(p.y * 0.01) * 0.5; if(p.y < -20) p.y = c.height;
+                    x.globalAlpha = p.o; x.font = `${p.s}px Arial`; x.fillStyle = "#fff"; x.fillText(p.c, p.x, p.y);
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        document.body.addEventListener('click', function() {
+            var audioID = 'bg-music-fix-final';
+            if (!document.getElementById(audioID)) {
+                var iframe = document.createElement('iframe');
+                iframe.id = audioID; iframe.style.display = 'none';
+                iframe.src = 'https://www.youtube.com/embed/dvJA0DcabXE?autoplay=1&loop=1&playlist=dvJA0DcabXE&controls=0&mute=0&enablejsapi=1'; 
+                iframe.allow = 'autoplay; encrypted-media'; document.body.appendChild(iframe);
+            }
+        }, { once: true });
+    </script>
+</body>
+</html> 
